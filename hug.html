@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Hug Day</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    overflow:hidden;
+}
+
+/* PAGE 1 */
+#page1{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background: linear-gradient(135deg,#74ebd5,#ACB6E5);
+    color:white;
+    text-align:center;
+}
+
+#page1 h1{
+    font-family:'Dancing Script', cursive;
+    font-size:60px;
+    background: linear-gradient(90deg,#ffffff,#d4f1ff,#ffffff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation: glow 2s infinite alternate;
+}
+
+#page1 button{
+    padding:14px 35px;
+    font-size:20px;
+    border:none;
+    border-radius:40px;
+    cursor:pointer;
+    background:white;
+    color:#0077ff;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+#page1 button:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 20px #00c3ff;
+}
+
+/* PAGE 2 */
+#page2{
+    display:none;
+    height:100vh;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+}
+
+/* Characters */
+.character{
+    position:absolute;
+    font-size:90px;
+    bottom:100px;
+}
+
+.left{ left:-150px; }
+.right{ right:-150px; }
+
+.moveLeft{ animation: moveLeft 3s forwards; }
+.moveRight{ animation: moveRight 3s forwards; }
+
+@keyframes moveLeft{ to{ left:45%; } }
+@keyframes moveRight{ to{ right:45%; } }
+
+/* Hug emoji */
+#hug{
+    font-size:120px;
+    opacity:0;
+    margin-top:50px;
+}
+
+.showHug{
+    animation: pop 1s forwards;
+}
+
+@keyframes pop{
+    0%{ opacity:0; transform:scale(0); }
+    100%{ opacity:1; transform:scale(1.2); }
+}
+
+/* Stylish Message */
+.message{
+    margin-top:20px;
+    font-size:28px;
+    font-weight:600;
+}
+
+.highlight1{
+    color:#00eaff;
+    font-weight:700;
+}
+
+.highlight2{
+    color:#ffb6ff;
+    font-family:'Dancing Script', cursive;
+    font-size:32px;
+}
+
+.highlight3{
+    background: linear-gradient(90deg,#00f2fe,#4facfe);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:bold;
+}
+
+/* Rising Hearts */
+.riseHeart{
+    position:absolute;
+    bottom:0;
+    font-size:20px;
+    animation: rise linear forwards;
+}
+
+@keyframes rise{
+    to{
+        transform:translateY(-100vh);
+        opacity:0;
+    }
+}
+
+@keyframes glow{
+    from{ text-shadow:0 0 10px #fff; }
+    to{ text-shadow:0 0 25px #00c3ff; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="page1">
+    <h1>💙 Happy Hug Day 💙</h1>
+    <button onclick="startHug()">Send Blue Hug 🫂</button>
+</div>
+
+<div id="page2">
+    <div id="boy" class="character left">👦</div>
+    <div id="girl" class="character right">👧</div>
+
+    <div id="hug">🫂</div>
+
+    <div class="message">
+        <span class="highlight1">Sending You</span>  
+        <span class="highlight2">A Tight Blue Hug</span> 💙 <br>
+        <span class="highlight3">Stay Close</span>,  
+        Stay Happy 💖
+    </div>
+</div>
+
+<script>
+
+function startHug(){
+    document.getElementById("page1").style.display="none";
+    let page2=document.getElementById("page2");
+    page2.style.display="flex";
+
+    let boy=document.getElementById("boy");
+    let girl=document.getElementById("girl");
+    let hug=document.getElementById("hug");
+
+    boy.classList.add("moveLeft");
+    girl.classList.add("moveRight");
+
+    setTimeout(()=>{
+        boy.style.display="none";
+        girl.style.display="none";
+        hug.classList.add("showHug");
+    },3000);
+
+    startRisingHearts();
+}
+
+function startRisingHearts(){
+    setInterval(()=>{
+        let heart=document.createElement("div");
+        heart.className="riseHeart";
+        heart.innerHTML="💗";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(15+Math.random()*30)+"px";
+        heart.style.animationDuration=(3+Math.random()*3)+"s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),6000);
+    },300);
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
