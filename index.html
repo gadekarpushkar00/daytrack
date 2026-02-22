@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Monthly Habit Tracker</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -15,9 +14,7 @@ body{
     color:#2c3e50;
 }
 
-h1,h2{
-    text-align:center;
-}
+h1,h2{text-align:center;}
 
 .controls,.box{
     background:white;
@@ -58,10 +55,12 @@ th{
     background:#f8f9fa;
 }
 
-input{
-    accent-color:#27ae60;
+.streak{
+    font-size:12px;
+    color:#e74c3c;
 }
 
+input{accent-color:#27ae60;}
 .hide{display:none;}
 </style>
 </head>
@@ -72,6 +71,7 @@ input{
 
 <div class="controls">
 <strong>Show / Hide Habits</strong>
+
 <label><input type="checkbox" checked onclick="toggleHabit('study')"> 📚 Study</label>
 <label><input type="checkbox" checked onclick="toggleHabit('gym')"> 🏋️ Gym</label>
 <label><input type="checkbox" checked onclick="toggleHabit('sleep')"> 😴 Sleep</label>
@@ -79,6 +79,11 @@ input{
 <label><input type="checkbox" checked onclick="toggleHabit('social')"> 📱 2 Hour Social Media</label>
 <label><input type="checkbox" checked onclick="toggleHabit('nofap')"> 🚫 No Fapping</label>
 <label><input type="checkbox" checked onclick="toggleHabit('water')"> 💧 3–4 Liter Water</label>
+
+<label><input type="checkbox" checked onclick="toggleHabit('reading')"> 📖 Book Reading</label>
+<label><input type="checkbox" checked onclick="toggleHabit('writing')"> ✍️ Writing</label>
+<label><input type="checkbox" checked onclick="toggleHabit('walking')"> 🚶 Walking</label>
+
 </div>
 
 <div class="box table-wrap">
@@ -106,6 +111,7 @@ for(let i=1;i<=30;i++) document.write(`<th>${i}</th>`);
 </div>
 
 <script>
+
 const habits=[
  {id:'study',label:'Study',color:'#2980b9'},
  {id:'gym',label:'Gym',color:'#27ae60'},
@@ -113,26 +119,36 @@ const habits=[
  {id:'fastfood',label:'No Fast Food',color:'#e67e22'},
  {id:'social',label:'Social Media',color:'#c0392b'},
  {id:'nofap',label:'No Fapping',color:'#2c3e50'},
- {id:'water',label:'Water',color:'#16a085'}
+ {id:'water',label:'Water',color:'#16a085'},
+ {id:'reading',label:'Book Reading',color:'#d35400'},
+ {id:'writing',label:'Writing',color:'#7f8c8d'},
+ {id:'walking',label:'Walking',color:'#1abc9c'}
 ];
 
 /* BUILD TABLE */
 const tbody=document.getElementById("habitTable");
+
 habits.forEach(h=>{
- let row=`<tr id="${h.id}"><td class="habit">${h.label}</td>`;
+ let row=`<tr id="${h.id}">
+ <td class="habit">
+ ${h.label}
+ <div class="streak" id="streak-${h.id}">🔥 Streak: 0</div>
+ </td>`;
+
  for(let i=1;i<=30;i++){
    row+=`<td><input type="checkbox" data-key="${h.id}-${i}"></td>`;
  }
+
  row+=`</tr>`;
  tbody.innerHTML+=row;
 });
 
-/* SHOW / HIDE */
+/* SHOW HIDE */
 function toggleHabit(id){
  document.getElementById(id).classList.toggle("hide");
 }
 
-/* LOAD & SAVE */
+/* LOAD + SAVE */
 document.querySelectorAll("input[type='checkbox']").forEach(box=>{
  const key=box.dataset.key;
  if(key){
@@ -154,8 +170,22 @@ function getLineData(habit){
  return data;
 }
 
+/* 🔥 STREAK CALCULATION */
+function getStreak(habit){
+ let streak=0;
+ for(let i=30;i>=1;i--){
+   if(localStorage.getItem(`${habit}-${i}`)==="true"){
+     streak++;
+   }else{
+     break;
+   }
+ }
+ return streak;
+}
+
 /* CHART */
 const ctx=document.getElementById("habitChart");
+
 let habitChart=new Chart(ctx,{
  type:'line',
  data:{
@@ -176,23 +206,34 @@ let habitChart=new Chart(ctx,{
  }
 });
 
-/* UPDATE + BEST HABIT */
+/* UPDATE ALL */
 function updateAll(){
+
  habitChart.data.datasets.forEach((ds,i)=>{
    ds.data=getLineData(habits[i].id);
  });
  habitChart.update();
 
  let best="",max=0;
+
  habits.forEach(h=>{
-   let v=getLineData(h.id).at(-1);
-   if(v>max){max=v;best=h.label;}
+   let total=getLineData(h.id).at(-1);
+   let streak=getStreak(h.id);
+
+   document.getElementById(`streak-${h.id}`)
+     .innerText=`🔥 Streak: ${streak}`;
+
+   if(total>max){
+     max=total;
+     best=h.label;
+   }
  });
+
  document.getElementById("bestHabit").innerText=best || "—";
 }
 
 updateAll();
-</script>
 
+</script>
 </body>
 </html>
